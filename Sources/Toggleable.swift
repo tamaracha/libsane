@@ -1,9 +1,9 @@
-//
-//  Toggleable.swift
-//  libsane
-//
-//  Created by Tamara Cook on 07.02.17.
-//
-//
-
-import Foundation
+protocol Toggleable: Changeable {
+  var value: Bool { get set }
+  mutating func toggle()
+}
+extension Toggleable {
+  mutating func toggle() {
+    value = !value
+  }
+}

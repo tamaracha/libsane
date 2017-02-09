@@ -1,6 +1,6 @@
 import Clibsane
 
-class SaneDevice {
+class Device {
   //MARK: Types
   enum State {
     case disconnected
@@ -86,17 +86,17 @@ class SaneDevice {
 
 }
 
-extension SaneDevice: CustomStringConvertible {
+extension Device: CustomStringConvertible {
   var description: String {
     return "\(model), \(type), \(name), \(vendor)"
   }
 }
 
-extension SaneDevice: Hashable {
+extension Device: Hashable {
   var hashValue: Int {
     return self.name.hashValue
   }
-  static func ==(lhs: SaneDevice, rhs: SaneDevice) -> Bool {
+  static func ==(lhs: Device, rhs: Device) -> Bool {
     return lhs.hashValue == rhs.hashValue
   }
 }

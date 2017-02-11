@@ -1,7 +1,7 @@
 import Clibsane
 
 public enum SaneStatus: Int, Error {
-  case good, unsupported, cancelled, busy, invalid, jammed, EOF, noDocs, coverOpen, IOError, noMem, accessDenied, unknown
+  case good, unsupported, cancelled, busy, invalid, jammed, EOF, noDocs, coverOpen, IOError, noMem, accessDenied, notInitialized, unknown
 }
 
 extension SaneStatus: CustomStringConvertible {

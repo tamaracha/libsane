@@ -1,12 +1,11 @@
 import Clibsane
 
 final public class LibSane {
-  // Singleton due to hardware communication
-  public static let shared = LibSane()
+  /// Singleton due to hardware communication
+  static let shared = LibSane()
 
   //MARK: Properties
-  public let version: Version
-  public private(set) var devices = [String:Device]()
+  let version: Version
 
   //MARK: Lifecycle hooks
   init?() {
@@ -18,22 +17,30 @@ final public class LibSane {
     self.version = Version(version)
   }
   deinit {
-    Clibsane.sane_exit()
+    sane_exit()
   }
 
-  //MARK: Methods
-  public func getDevices(localOnly: Bool = false) throws {
-    var device_list: UnsafeMutablePointer<UnsafePointer<SANE_Device>?>?
-    let status = Int(sane_get_devices(&device_list, Int32(localOnly ? 1 : 0)).rawValue)
+  //MARK: Static methods
+  public static func getDevices(localOnly: Bool = false) throws -> [String: Device] {
+    guard shared != nil else {
+      throw SaneStatus.notInitialized
+    }
+    var tmpPointer: UnsafeMutablePointer<UnsafePointer<SANE_Device>?>?
+    let status = Int(sane_get_devices(&tmpPointer, Int32(localOnly ? 1 : 0)).rawValue)
     guard status == 0 else {
       throw SaneStatus(rawValue: status)!
     }
-    while device_list?.pointee != nil {
-      if let el = device_list?.pointee?.pointee {
+    var devices = [String: Device]()
+    guard var pointer = tmpPointer else {
+      return devices
+    }
+    while pointer.pointee != nil {
+      if let el = pointer.pointee?.pointee {
         let device = Device(from: el)
         devices[device.name] = device
       }
-      device_list = device_list?.successor()
+      pointer = pointer.successor()
     }
+    return devices
   }
 }

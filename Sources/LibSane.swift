@@ -24,11 +24,11 @@ final public class LibSane {
 
   //MARK: Static methods
   /**
-    This function can be used to search for connected SANE devices
+   This function can be used to search for connected SANE devices
 
    - parameter localOnly: skips network devices in search, defaults to false
-    - returns: the found devices as a dictionary, where a device can be accessed by its name
-  */
+   - returns: the found devices as a dictionary, where a device can be accessed by its name
+   */
   public static func getDevices(localOnly: Bool = false) throws -> [String: Device] {
     guard shared != nil else {
       throw SaneStatus.notInitialized

@@ -1,4 +1,4 @@
-struct Version {
+public struct Version {
   let major: Int, minor: Int, build: Int
   init(_ saneValue: Int32) {
     major = Int((saneValue >> 24) & 0xff)
@@ -8,7 +8,7 @@ struct Version {
 }
 
 extension Version: CustomStringConvertible {
-  var description: String {
+  public var description: String {
     return "\(major).\(minor).\(build)"
   }
 }

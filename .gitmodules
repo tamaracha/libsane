@@ -1,5 +1,5 @@
 [submodule "source"]
 	path = libsane
-	url = ssh://git@github.com/tamaracha/libsane
+	url = https://github.com/tamaracha/libsane
 	branch = master
   ignore = dirty

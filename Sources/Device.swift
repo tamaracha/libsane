@@ -1,6 +1,7 @@
 import Clibsane
 
-class Device {
+/// Represents a SANE device.
+public class Device {
   //MARK: Types
   enum State {
     case disconnected
@@ -9,12 +10,11 @@ class Device {
   }
 
   //MARK: Properties
-  let name: String
-  let vendor: String
-  let model: String
-  let type: String
-  var state: State = .connected
-  var options = [String: OptionController]()
+  /// Properties which describe a SANE device
+  public let name, vendor, model, type: String
+
+  private(set) var state: State = .connected
+  private(set) var options = [String: OptionController]()
 
   //MARK: Lifecycle Hooks
   init(name: String, vendor: String, model: String, type: String) {
@@ -33,7 +33,7 @@ class Device {
   //MARK: Methods
   func open() throws {
     var handle: SANE_Handle?
-    let status = Int(Clibsane.sane_open(name, &handle).rawValue)
+    let status = Int(sane_open(name, &handle).rawValue)
     guard status == 0 else {
       throw SaneStatus(rawValue: status)!
     }
@@ -44,7 +44,7 @@ class Device {
 
   func close() {
     if case let .open(handle) = state {
-      Clibsane.sane_close(handle)
+      sane_close(handle)
     }
     state = .connected
   }
@@ -86,17 +86,21 @@ class Device {
 
 }
 
+//MARK: Extensions
 extension Device: CustomStringConvertible {
-  var description: String {
-    return "\(model), \(type), \(name), \(vendor)"
+  /// use the device name as description
+  public var description: String {
+    return name
   }
 }
 
 extension Device: Hashable {
-  var hashValue: Int {
-    return self.name.hashValue
+  /// use the device name as hash value
+  public var hashValue: Int {
+    return name.hashValue
   }
-  static func ==(lhs: Device, rhs: Device) -> Bool {
+  /// Devices can be equated by their hash value
+  static public func ==(lhs: Device, rhs: Device) -> Bool {
     return lhs.hashValue == rhs.hashValue
   }
 }

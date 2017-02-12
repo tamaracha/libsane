@@ -1,0 +1,5 @@
+[submodule "source"]
+	path = libsane
+	url = ./
+	branch = master
+  ignore = dirty

@@ -1,6 +1,6 @@
 import Clibsane
 
-class BaseOption: OptionController {
+public class BaseOption: OptionController {
   enum OptionError: Int, Error {
     case noDevice
     case noHandle
@@ -9,7 +9,7 @@ class BaseOption: OptionController {
 
   //MARK: Properties
   var descriptor: OptionDescriptor
-  private let index: Int32
+  let index: Int32
   private weak var device: Device!
   //MARK: Lifecycle
   init(from descriptor: OptionDescriptor, at index: Int32, of device: Device) {

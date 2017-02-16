@@ -31,12 +31,12 @@ final public class LibSane {
    */
   public static func getDevices(localOnly: Bool = false) throws -> [String: Device] {
     guard shared != nil else {
-      throw SaneStatus.notInitialized
+      throw StatusCode.notInitialized
     }
     var tmpPointer: UnsafeMutablePointer<UnsafePointer<SANE_Device>?>?
-    let status = Int(sane_get_devices(&tmpPointer, Int32(localOnly ? 1 : 0)).rawValue)
+    let status = sane_get_devices(&tmpPointer, Int32(localOnly ? 1 : 0)).rawValue
     guard status == 0 else {
-      throw SaneStatus(rawValue: status)!
+      throw StatusCode(rawValue: status)!
     }
     var devices = [String: Device]()
     guard var pointer = tmpPointer else {

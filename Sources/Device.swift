@@ -36,9 +36,9 @@ close()
   //MARK: Methods
   public func open() throws {
     var tmpHandle: SANE_Handle?
-    let status = Int(sane_open(name, &tmpHandle).rawValue)
+    let status = sane_open(name, &tmpHandle).rawValue
     guard status == 0 else {
-      throw SaneStatus(rawValue: status)!
+      throw StatusCode(rawValue: status)!
     }
     if let handle = tmpHandle {
       state = .open(handle: handle)
@@ -58,9 +58,9 @@ close()
       throw BaseOption.OptionError.noHandle
     }
     var count: Int32 = 1
-    let countStatus = Int(sane_control_option(handle, Int32(0), SANE_Action(0), &count, nil).rawValue)
+    let countStatus = sane_control_option(handle, Int32(0), SANE_Action(0), &count, nil).rawValue
     guard countStatus == 0 else {
-      throw SaneStatus(rawValue: countStatus)!
+      throw StatusCode(rawValue: countStatus)!
     }
     guard count > 1 else {
       return

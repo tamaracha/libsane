@@ -5,9 +5,9 @@ class IntOption: BaseOption, Changeable {
   func getValue() throws -> Int {
     let (handle, index) = try checkHandle()
     var saneValue: Int32 = 0
-    let status = Int(sane_control_option(handle, index, SANE_Action(0), &saneValue, nil).rawValue)
+    let status = sane_control_option(handle, index, SANE_Action(0), &saneValue, nil).rawValue
     guard status == 0 else {
-      throw SaneStatus(rawValue: status)!
+      throw StatusCode(rawValue: status)!
     }
     return Int(saneValue)
   }
@@ -15,9 +15,9 @@ class IntOption: BaseOption, Changeable {
     let (handle, index) = try checkHandle()
     var saneValue = Int32(value)
     var saneInfo: Int32 = 0
-    let status = Int(sane_control_option(handle, index, SANE_Action(1), &saneValue, &saneInfo).rawValue)
+    let status = sane_control_option(handle, index, SANE_Action(1), &saneValue, &saneInfo).rawValue
     guard status == 0 else {
-      throw SaneStatus(rawValue: status)!
+      throw StatusCode(rawValue: status)!
     }
     return (value: Int(saneValue), info: Info(rawValue: Int(saneInfo)))
   }

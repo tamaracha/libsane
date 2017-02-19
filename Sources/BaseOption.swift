@@ -27,3 +27,9 @@ public class BaseOption: OptionController {
     return (handle, index)
   }
 }
+
+extension BaseOption: CustomStringConvertible {
+  public var description: String {
+    return descriptor.description
+  }
+}

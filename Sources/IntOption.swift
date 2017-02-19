@@ -19,6 +19,6 @@ class IntOption: BaseOption, Changeable {
     guard status == 0 else {
       throw StatusCode(rawValue: status)!
     }
-    return (value: Int(saneValue), info: Info(rawValue: Int(saneInfo)))
+    return (value: Int(saneValue), info: Info(rawValue: saneInfo))
   }
 }

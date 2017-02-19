@@ -26,6 +26,6 @@ class NumericOption: BaseOption, Changeable {
     guard status == 0 else {
       throw StatusCode(rawValue: status)!
     }
-    return (value: saneValue.unfixed(), info: Info(rawValue: Int(saneInfo)))
+    return (value: saneValue.unfixed(), info: Info(rawValue: saneInfo))
   }
 }

@@ -26,6 +26,6 @@ class TextOption: BaseOption, Changeable {
     guard status == 0 else {
       throw StatusCode(rawValue: status)!
     }
-    return (value: saneValue, info: Info(rawValue: Int(saneInfo)))
+    return (value: saneValue, info: Info(rawValue: saneInfo))
   }
 }

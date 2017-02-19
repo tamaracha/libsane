@@ -9,7 +9,7 @@ public enum StatusCode: UInt32, Error {
    */
   case good, unsupported, cancelled, busy, invalid, jammed, EOF, noDocs, coverOpen, IOError, noMem, accessDenied
   /// additional errors, introduced by this module
-  case notInitialized, unknown
+  case unknown
 }
 
 extension StatusCode: CustomStringConvertible {

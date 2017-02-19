@@ -2,6 +2,11 @@ import Clibsane
 
 /// The entry class for this module
 final public class LibSane {
+  //MARK: Types
+  enum ApiErrors: Error {
+    case notInitialized
+  }
+
   /// An instance of LibSane itself. It inits and exits the SANE backend during init and deinit.
   static let shared = LibSane()
 
@@ -31,7 +36,7 @@ final public class LibSane {
    */
   public static func getDevices(localOnly: Bool = false) throws -> [String: Device] {
     guard shared != nil else {
-      throw StatusCode.notInitialized
+      throw ApiErrors.notInitialized
     }
     var tmpPointer: UnsafeMutablePointer<UnsafePointer<SANE_Device>?>?
     let status = sane_get_devices(&tmpPointer, Int32(localOnly ? 1 : 0)).rawValue

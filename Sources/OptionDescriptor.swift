@@ -6,12 +6,12 @@ protocol Presentable: CustomStringConvertible {
   var desc: String { get }
 }
 extension Presentable {
-  var description: String {
-    return name
+  public var description: String {
+    return "\(name): \(desc)"
   }
 }
 
-struct OptionDescriptor: Presentable {
+public struct OptionDescriptor: Presentable {
   //MARK: Types
   enum ValueType: Int {
     case bool, int, fixed, string, button, group
@@ -34,7 +34,7 @@ struct OptionDescriptor: Presentable {
 
   enum Constraint {
     case none
-    case range(StrideThrough<Int>)
+    case range(min: Double, max: Double, quant: Double)
     case numberList([Int])
     case stringList([String])
   }
@@ -59,14 +59,22 @@ struct OptionDescriptor: Presentable {
     unit = Unit(rawValue: Int(saneValue.unit.rawValue))!
     size = Int(saneValue.size)
     cap = Cap(rawValue: Int(saneValue.cap))
-    switch saneValue.constraint_type.rawValue {
-    case 0:
+    switch saneValue.constraint_type {
+    case SANE_CONSTRAINT_NONE:
       constraint = .none
       break
-    case 1:
+    case SANE_CONSTRAINT_RANGE:
       let range = saneValue.constraint.range.pointee
-      constraint = .range(stride(from: Int(range.min), through: Int(range.max), by: Int(range.quant)))
-    case 2:
+      switch valueType {
+      case .int:
+        constraint = .range(min: Double(range.min), max: Double(range.max), quant: Double(range.quant))
+      case .fixed:
+        constraint = .range(min: range.min.unfixed(), max: range.max.unfixed(), quant: range.quant.unfixed())
+      default:
+        print("option type neither int nor fixed")
+        return nil
+      }
+    case SANE_CONSTRAINT_WORD_LIST:
       guard var itemPointer = saneValue.constraint.word_list else {
         constraint = .none
         break
@@ -78,7 +86,7 @@ struct OptionDescriptor: Presentable {
         list.append(Int(itemPointer.pointee))
       }
       constraint = .numberList(list)
-    case 3:
+    case SANE_CONSTRAINT_STRING_LIST:
       guard var itemPointer = saneValue.constraint.string_list else {
         constraint = .none
         break

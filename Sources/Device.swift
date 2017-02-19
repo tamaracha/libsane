@@ -11,22 +11,25 @@ public class Device {
 
   //MARK: Properties
   /// Properties which describe a SANE device
-  public let name, vendor, model, type: String
+  public let name, model, vendor, type: String
 
   private(set) var state: State = .connected
   public private(set) var options = [String: BaseOption]()
 
   //MARK: Lifecycle Hooks
-  init(name: String, vendor: String, model: String, type: String) {
+  init(_ name: String, model: String, vendor: String, type: String) {
     self.name = name
     self.vendor = vendor
     self.model = model
     self.type = type
   }
+  convenience init(_ name: String) {
+    self.init(name, model: "unknown", vendor: "Noname", type: "virtual device")
+  }
   init(from device: SANE_Device) {
     name = String(cString: device.name)
-    vendor = String(cString: device.vendor)
     model = String(cString: device.model)
+    vendor = String(cString: device.vendor)
     type = String(cString: device.type)
   }
   deinit {
@@ -36,9 +39,9 @@ close()
   //MARK: Methods
   public func open() throws {
     var tmpHandle: SANE_Handle?
-    let status = sane_open(name, &tmpHandle).rawValue
-    guard status == 0 else {
-      throw StatusCode(rawValue: status)!
+    let status = sane_open(name, &tmpHandle)
+    guard status == SANE_STATUS_GOOD else {
+      throw status
     }
     if let handle = tmpHandle {
       state = .open(handle: handle)
@@ -58,9 +61,9 @@ close()
       throw BaseOption.OptionError.noHandle
     }
     var count: Int32 = 1
-    let countStatus = sane_control_option(handle, Int32(0), SANE_Action(0), &count, nil).rawValue
-    guard countStatus == 0 else {
-      throw StatusCode(rawValue: countStatus)!
+    let status = sane_control_option(handle, Int32(0), SANE_Action(0), &count, nil)
+    guard status == SANE_STATUS_GOOD else {
+      throw status
     }
     guard count > 1 else {
       return

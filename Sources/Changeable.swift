@@ -11,9 +11,9 @@ protocol Changeable: OptionController {
 extension Changeable {
   func setAuto() throws {
     let (handle, index) = try checkHandle()
-    let status = sane_control_option(handle, index, SANE_Action(2), nil, nil).rawValue
-    guard status == 0 else {
-      throw StatusCode(rawValue: status)!
+    let status = sane_control_option(handle, index, SANE_Action(2), nil, nil)
+    guard status == SANE_STATUS_GOOD else {
+      throw status
     }
   }
 }

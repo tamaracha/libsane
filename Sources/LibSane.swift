@@ -39,9 +39,9 @@ final public class LibSane {
       throw ApiErrors.notInitialized
     }
     var tmpPointer: UnsafeMutablePointer<UnsafePointer<SANE_Device>?>?
-    let status = sane_get_devices(&tmpPointer, Int32(localOnly ? 1 : 0)).rawValue
-    guard status == 0 else {
-      throw StatusCode(rawValue: status)!
+    let status = sane_get_devices(&tmpPointer, Int32(localOnly ? 1 : 0))
+    guard status == SANE_STATUS_GOOD else {
+      throw status
     }
     var devices = [String: Device]()
     guard var pointer = tmpPointer else {

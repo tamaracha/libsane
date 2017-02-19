@@ -12,9 +12,9 @@ class TextOption: BaseOption, Changeable {
   func getValue() throws -> String {
     let (handle, index) = try checkHandle()
     var saneValue = ""
-    let status = sane_control_option(handle, index, SANE_Action(0), &saneValue, nil).rawValue
-    guard status == 0 else {
-      throw StatusCode(rawValue: status)!
+    let status = sane_control_option(handle, index, SANE_Action(0), &saneValue, nil)
+    guard status == SANE_STATUS_GOOD else {
+      throw status
     }
     return saneValue
   }
@@ -22,9 +22,9 @@ class TextOption: BaseOption, Changeable {
     let (handle, index) = try checkHandle()
     var saneValue = value
     var saneInfo: Int32 = 0
-    let status = sane_control_option(handle, index, SANE_Action(1), &saneValue, &saneInfo).rawValue
-    guard status == 0 else {
-      throw StatusCode(rawValue: status)!
+    let status = sane_control_option(handle, index, SANE_Action(1), &saneValue, &saneInfo)
+    guard status == SANE_STATUS_GOOD else {
+      throw status
     }
     return (value: saneValue, info: Info(rawValue: saneInfo))
   }

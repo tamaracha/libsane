@@ -1,10 +1,11 @@
 import Clibsane
 
 protocol Option {
+  associatedtype OptionError
+  associatedtype Unit
+  associatedtype Cap: Capable = Capabilities
+  var cap: Self.Cap { get }
+  var unit: Unit { get }
   var index: SANE_Int { get }
-  weak var device: Device? { get set }
-  var cap: BaseOption.Cap { get }
-  var isReadable: Bool { get }
-  var isWritable: Bool { get }
-  var isautosetable: Bool { get }
+  weak var device: Device? {get }
 }

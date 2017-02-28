@@ -1,35 +1,42 @@
 import Clibsane
 
-public class BaseOption: OptionController {
-  enum OptionError: Int, Error {
+public class BaseOption: Option {
+  //MARK: Types
+  public enum OptionError: Error {
     case noDevice
-    case noHandle
     case noValue
+    case invalid
+  }
+
+  public enum Unit: UInt32 {
+    case none, pixel, bit, mm, dpi, percent, microsecond
   }
 
   //MARK: Properties
-  var descriptor: OptionDescriptor
-  let index: Int32
-  private weak var device: Device!
+  public let name, title, desc: String
+  public let unit: Unit
+  var cap: Capabilities
+  let index: SANE_Int
+  weak var device: Device?
+
   //MARK: Lifecycle
-  init(from descriptor: OptionDescriptor, at index: Int32, of device: Device) {
-    self.descriptor = descriptor
+  init(from descriptor: SANE_Option_Descriptor, at index: SANE_Int, of device: Device) {
+    name = String(cString: descriptor.name)
+    title = String(cString: descriptor.title)
+    desc = String(cString: descriptor.desc)
+    unit = Unit(rawValue: descriptor.unit.rawValue)!
+    cap = Capabilities(rawValue: descriptor.cap)
+
     self.index = index
     self.device = device
   }
-  func checkHandle() throws -> (SANE_Handle, Int32) {
-    guard let state = device?.state else {
-      throw OptionError.noDevice
-    }
-    guard case let .open(handle) = state else {
-      throw OptionError.noHandle
-    }
-    return (handle, index)
+  func update(_ descriptor: SANE_Option_Descriptor) {
+  cap = Capabilities(rawValue: descriptor.cap)
   }
 }
 
 extension BaseOption: CustomStringConvertible {
   public var description: String {
-    return descriptor.description
+    return "\(name): \(desc)"
   }
 }

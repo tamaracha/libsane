@@ -1,31 +1,62 @@
 import Clibsane
 
-class NumericOption: BaseOption, Changeable {
-  var value: Double {
-    get {
-      return 0.0
-    }
-    set {
-      
-    }
+class NumericOption: BaseOption {
+  enum Constraint {
+    case range(ClosedRange<Double>), quantRange(StrideThrough<Double>), list([Double])
   }
-  func getValue() throws -> Double {
-    let (handle, index) = try checkHandle()
-    var saneValue: Int32 = 0
-    let status = sane_control_option(handle, index, SANE_Action(0), &saneValue, nil)
-    guard status == SANE_STATUS_GOOD else {
-      throw status
+
+  //MARK: Properties
+  let size: Int
+  let constraint: Constraint?
+  var value = [0.0]
+
+  //MARK: Lifecycle
+  override init(from descriptor: SANE_Option_Descriptor, at index: SANE_Int, of device: Device) {
+    size = Int(descriptor.size)/MemoryLayout<SANE_Fixed>.stride
+    switch descriptor.constraint_type {
+    case SANE_CONSTRAINT_NONE:
+      constraint = nil
+    case SANE_CONSTRAINT_RANGE:
+      let range = descriptor.constraint.range.pointee
+      let (min, max, quant) = (range.min.unfixed(), range.max.unfixed(), range.quant.unfixed())
+      if range.quant == 0 {
+        constraint = .range(min ... max)
+      } else {
+        constraint = .quantRange(stride(from: min, through: max, by: quant))
+      }
+    case SANE_CONSTRAINT_WORD_LIST:
+      guard let ptr = descriptor.constraint.word_list else {
+        constraint = nil
+        break
+      }
+      constraint = .list([SANE_Word](UnsafeBufferPointer(start: ptr, count: Int(ptr.pointee))).dropFirst().map({$0.unfixed()}))
+    default:
+      constraint = nil
     }
-    return saneValue.unfixed()
+    super.init(from: descriptor, at: index, of: device)
   }
-  func setValue(value: Double) throws -> (value: Double, info: Info) {
-    let (handle, index) = try checkHandle()
-    var saneValue = value.fixed()
-    var saneInfo: Int32 = 0
-    let status = sane_control_option(handle, index, SANE_Action(1), &saneValue, &saneInfo)
-    guard status == SANE_STATUS_GOOD else {
-      throw status
+}
+
+extension NumericOption: Changeable {
+  func fromSane(_ saneValue: [SANE_Word]) -> [Double] {
+    return saneValue.map({$0.unfixed()})
+  }
+  func toSane(_ value: [Double]) -> [SANE_Word] {
+    return value.map({$0.fixed()})
+  }
+  public func getValue() throws -> [Double] {
+    try cap.canRead()
+    var saneValue = [SANE_Word](repeating: 0, count: size)
+    try device?.getValue(at: index, to: &saneValue)
+    return fromSane(saneValue)
+  }
+  public func setValue(_ value: [Double]) throws -> [Double] {
+    guard value.count == size else {
+      throw OptionError.invalid
     }
-    return (value: saneValue.unfixed(), info: Info(rawValue: saneInfo))
+    try cap.canWrite()
+    var saneValue = toSane(value)
+    try device?.setValue(at: index, to: &saneValue)
+    return fromSane(saneValue)
   }
 }

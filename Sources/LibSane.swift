@@ -2,44 +2,44 @@ import Clibsane
 
 /// The entry class for this module
 final public class LibSane {
-  //MARK: Types
-  enum ApiErrors: Error {
-    case notInitialized
-  }
-
   /// An instance of LibSane itself. It inits and exits the SANE backend during init and deinit.
-  static let shared = LibSane()
+  private static let shared: LibSane? = LibSane()
 
   //MARK: Properties
-  /// The version of SANE. It is set during initialization.
-  let version: Version
+  /// The SANE version. It is set during initialization.
+  private let version: Version
 
   //MARK: Lifecycle hooks
   private init?() {
-    var version: Int32 = 0
-    let status = Int(sane_init(&version, nil).rawValue)
-    guard status == 0 else {
+    var versionCode: SANE_Int = 0
+    let status = sane_init(&versionCode, nil)
+    guard status == SANE_STATUS_GOOD else {
       return nil
     }
-    self.version = Version(version)
+    version = Version(versionCode)
   }
   deinit {
     sane_exit()
   }
 
-  //MARK: Static methods
+  //MARK: Statics
+  /// The SANE version if initialization was successful
+  public static var version: Version? {
+    return shared?.version
+  }
   /**
-   This function can be used to search for connected SANE devices
+   This function can be used to search for connected SANE devices, if initialization was successful
 
    - parameter localOnly: skips network devices in search, defaults to false
-   - returns: the found devices as a dictionary, where a device can be accessed by its name
+   - returns: either the found devices as a dictionary, where a device can be accessed by its name, or nil if not initialized
+   - complexity: very high
    */
-  public static func getDevices(localOnly: Bool = false) throws -> [String: Device] {
+  public static func getDevices(localOnly: Bool = false) throws -> [String: Device]? {
     guard shared != nil else {
-      throw ApiErrors.notInitialized
+      return nil
     }
     var tmpPointer: UnsafeMutablePointer<UnsafePointer<SANE_Device>?>?
-    let status = sane_get_devices(&tmpPointer, Int32(localOnly ? 1 : 0))
+    let status = sane_get_devices(&tmpPointer, localOnly ? SANE_TRUE : SANE_FALSE)
     guard status == SANE_STATUS_GOOD else {
       throw status
     }

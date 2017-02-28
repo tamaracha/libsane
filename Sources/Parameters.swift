@@ -21,8 +21,8 @@ public struct Parameters {
   public let pixelsPerLine: Int
   public let lines: Int
   public let depth: Int
-  public var bytesTotal: Int {
-    return lines*bytesPerLine
+  public var bytesTotal: Int? {
+    return lines != -1 ? lines*bytesPerLine : nil
   }
   public var bytesPerSample: Int {
     return (depth <= 8) ? 1 : 2

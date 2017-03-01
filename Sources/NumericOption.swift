@@ -1,8 +1,15 @@
 import Clibsane
 
-class NumericOption: BaseOption {
+/// An option with a decimal number value
+public class NumericOption: BaseOption {
+  /// constraints for the option value
   enum Constraint {
-    case range(ClosedRange<Double>), quantRange(StrideThrough<Double>), list([Double])
+    /// The value must belong to an interval
+    case range(ClosedRange<Double>)
+    /// The value must belong to a quantized interval
+    case quantRange(StrideThrough<Double>)
+    /// The value must be one of the numbers given in this list
+    case list([Double])
   }
 
   //MARK: Properties
@@ -44,12 +51,14 @@ extension NumericOption: Changeable {
   func toSane(_ value: [Double]) -> [SANE_Word] {
     return value.map({$0.fixed()})
   }
+  /// Get the value of this option
   public func getValue() throws -> [Double] {
     try cap.canRead()
     var saneValue = [SANE_Word](repeating: 0, count: size)
     try device?.getValue(at: index, to: &saneValue)
     return fromSane(saneValue)
   }
+  /// Change the value of this option
   public func setValue(_ value: [Double]) throws -> [Double] {
     guard value.count == size else {
       throw OptionError.invalid

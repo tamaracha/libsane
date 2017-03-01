@@ -3,13 +3,19 @@ import Clibsane
 /// Represents a SANE device.
 public class Device {
   //MARK: Types
+  /// Device-specific errors
   public enum DeviceError: Error {
-case noHandle
+/// Currently, the device has no open handle
+    case noHandle
 }
 
+  /// Possible states of a device
   public enum State {
+    /// The physical device is inaccessible
     case disconnected
+    /// The physical device is accessible. This is the default state
     case connected
+    /// The device is open and can execute different operations
     case open
   }
 
@@ -34,7 +40,9 @@ case noHandle
   /// Properties which describe a SANE device
   public let name, model, vendor, type: String
 
+  /// The current device state
   public private(set) var state: State = .connected
+  /// The options of the device
   public private(set) var options = [String: BaseOption]()
   private var handle: SANE_Handle? {
     didSet {
@@ -63,6 +71,7 @@ close()
 }
 
   //MARK: Methods
+  /// Open the device for configuration and image taking
   public func open() throws {
     var handle: SANE_Handle?
     let status = sane_open(name, &handle)
@@ -75,6 +84,7 @@ close()
     }
   }
 
+  /// Terminate the interaction with the device
   public func close() {
     if let handle = handle {
       sane_close(handle)
@@ -83,6 +93,7 @@ close()
     options.removeAll()
   }
 
+  /// Load the options of the device
   func getOptions() throws {
     guard case .open = state else {
       return
@@ -121,6 +132,7 @@ close()
     }
   }
 
+  /// Reload the options of the device
   func reloadOptions() throws {
     guard case .open = state else {
       return
@@ -134,6 +146,7 @@ close()
   }
   }
 
+  /// Set an option to its default value
   func setAuto(at index: SANE_Int) throws {
     guard case .open = state else {
       return
@@ -146,6 +159,8 @@ close()
       throw Status(rawValue: status)!
     }
   }
+
+  /// Get the value of an option
   func getValue(at index: SANE_Int, to ptr: UnsafeMutableRawPointer) throws {
     guard case .open = state else {
       return
@@ -158,6 +173,8 @@ close()
       throw Status(rawValue: status)!
     }
   }
+
+  /// Change the value of an option
   func setValue(at index: SANE_Int, to ptr: UnsafeMutableRawPointer) throws {
     guard case .open = state else {
       return
@@ -176,6 +193,7 @@ close()
     }
   }
 
+  /// Get the scan parameters of the device
   public func getParameters() throws -> Parameters {
     guard let handle = handle else {
       throw DeviceError.noHandle
@@ -187,6 +205,7 @@ close()
     }
     return Parameters(params)
   }
+
   private func start() throws {
     guard case .open = state else {
       return
@@ -199,6 +218,7 @@ close()
       throw Status(rawValue: status)!
 }
   }
+
   private func setAsync() throws -> Bool {
     guard let handle = handle else {
       throw DeviceError.noHandle
@@ -213,6 +233,7 @@ close()
       throw Status(rawValue: status)!
     }
   }
+
   private func read(frameSize: Int? = nil, maxLen: Int = Device.bufferSize) throws -> [SANE_Byte] {
     guard let handle = handle else {
       throw DeviceError.noHandle
@@ -238,6 +259,8 @@ close()
     }
     return data
 }
+
+  /// Cancel a currently pending physical operation
   public func cancel() {
     guard case .open = state else {
       return
@@ -246,6 +269,8 @@ close()
       sane_cancel(handle)
     }
 }
+
+  /// Scan an image
   public func scan() throws -> (data: [SANE_Byte], params: Parameters) {
     try start()
     let params = try getParameters()

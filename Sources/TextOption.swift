@@ -1,10 +1,11 @@
 import Clibsane
 
+/// An option with a string value
 public class TextOption: BaseOption {
   //MARK: Properties
-  public let size: Int
-  public let constraint: [String]?
-  public var value = "hallo"
+  let size: Int
+  let constraint: [String]?
+  var value = "hallo"
 
   //MARK: Lifecycle
   override init(from descriptor: SANE_Option_Descriptor, at index: SANE_Int, of device: Device) {
@@ -45,6 +46,7 @@ extension TextOption: Changeable {
   func fromSane(_ saneValue: SANE_String_Const) -> String {
     return String(cString: saneValue)
   }
+  /// Get the value of this option
   public func getValue() throws -> String {
     try cap.canRead()
     let value = String(repeating: "x", count: size-1)
@@ -54,6 +56,7 @@ extension TextOption: Changeable {
       return fromSane(saneValue)
     })
   }
+  /// Change the value of this option
   public func setValue(_ value: String) throws -> String {
     try cap.canWrite()
     guard validate(value) == true else {

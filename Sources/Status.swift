@@ -1,13 +1,16 @@
 import Clibsane
 
+/// Conform toExpressibleByIntegerLiteral
 extension SANE_Status: ExpressibleByIntegerLiteral {
+  /// Initialize SANE_Status with an integer literal
   public init(integerLiteral value: UInt32) {
     self.rawValue = value
   }
 }
 
-/// The status codes returned by SANE
+/// This contains the SANE status codes
 public enum Status: SANE_Status, Error {
+  /// The status codes returned by SANE
   case good, unsupported, cancelled, busy, inval, eof, jammed, noDocs, coverOpen, IOError, noMem, accessDenied
 }
 

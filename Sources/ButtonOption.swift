@@ -1,4 +1,5 @@
-class ButtonOption: BaseOption, Pressable {
+/// An option with no value, but setting it causes an action
+public class ButtonOption: BaseOption, Pressable {
   func press() throws {
     try cap.canWrite()
     var saneValue = 0

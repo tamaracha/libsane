@@ -1,14 +1,22 @@
 import Clibsane
 
+/// An option with an integer value
 public class IntOption: BaseOption {
+  /// constraints for the option value
   enum Constraint {
-    case range(CountableClosedRange<Int>), quantRange(StrideThrough<Int>), list([Int])
+    /// The value must belong to an interval
+    case range(CountableClosedRange<Int>)
+    /// The value must belong to a quantized interval
+    case quantRange(StrideThrough<Int>)
+    /// The value must be one of the numbers given in this list
+    case list([Int])
   }
 
   //MARK: Properties
-  public let size: Int
-  let constraint: Constraint?
+  /// The option value
   public var value = [0]
+  let size: Int
+  let constraint: Constraint?
 
   //MARK: Lifecycle
   override init(from descriptor: SANE_Option_Descriptor, at index: SANE_Int, of device: Device) {
@@ -44,12 +52,14 @@ extension IntOption: Changeable {
   func toSane(_ value: [Int]) -> [SANE_Int] {
     return value.map({SANE_Int($0)})
   }
+  /// Get the value of this option
   public func getValue() throws -> [Int] {
     try cap.canRead()
     var saneValue = [SANE_Int](repeating: 0, count: size)
     try device?.getValue(at: index, to: &saneValue)
     return fromSane(saneValue)
   }
+  /// Change the option value
   public func setValue(_ value: [Int]) throws -> [Int] {
     try cap.canWrite()
     guard value.count == size else {

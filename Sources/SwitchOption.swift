@@ -1,5 +1,6 @@
 import Clibsane
 
+/// An option with a binary value
 class SwitchOption: BaseOption, Changeable {
   //MARK: Properties
   var value = false

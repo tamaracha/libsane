@@ -1,3 +1,3 @@
-protocol Pressable: OptionController {
-  func press()
+protocol Pressable: Option {
+  func press() throws
 }

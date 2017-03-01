@@ -1,29 +1,60 @@
 import Clibsane
 
-class BaseOption: OptionController {
-  enum OptionError: Int, Error {
+/// A basic option which is subclassed by the other option types
+public class BaseOption: Option {
+  //MARK: Types
+  /// option-specific errors
+  public enum OptionError: Error {
+    /// The device is lost due to weak variable
     case noDevice
-    case noHandle
-    case noValue
+    /// The value to be set does not conform to its constraints
+    case invalid
+  }
+
+  /// Units for number values
+  public enum Unit: UInt32 {
+    /// A pixel or similar measurement
+    case pixel = 1
+    /// A bit (information) measurement
+    case bit
+    /// A length measurement in mm
+    case mm
+    /// A resolution measurement in dpi
+    case dpi
+    /// A percentage measurement
+    case percent
+    /// A time measurement in microseconds
+    case microsecond
   }
 
   //MARK: Properties
-  var descriptor: OptionDescriptor
-  private let index: Int32
-  private weak var device: Device!
+  /// The unique name, one-line-title, and multi-line-description of the option
+  public let name, title, desc: String
+  /// The unit of the option value
+  public let unit: Unit?
+  var cap: Capabilities
+  let index: SANE_Int
+  weak var device: Device?
+
   //MARK: Lifecycle
-  init(from descriptor: OptionDescriptor, at index: Int32, of device: Device) {
-    self.descriptor = descriptor
+  init(from descriptor: SANE_Option_Descriptor, at index: SANE_Int, of device: Device) {
+    name = String(cString: descriptor.name)
+    title = String(cString: descriptor.title)
+    desc = String(cString: descriptor.desc)
+    unit = Unit(rawValue: descriptor.unit.rawValue)
+    cap = Capabilities(rawValue: descriptor.cap)
+
     self.index = index
     self.device = device
   }
-  func checkHandle() throws -> (SANE_Handle, Int32) {
-    guard let state = device?.state else {
-      throw OptionError.noDevice
-    }
-    guard case let .open(handle) = state else {
-      throw OptionError.noHandle
-    }
-    return (handle, index)
+  func update(_ descriptor: SANE_Option_Descriptor) {
+  cap = Capabilities(rawValue: descriptor.cap)
+  }
+}
+
+extension BaseOption: CustomStringConvertible {
+  /// A textual representation composed of name and desc
+  public var description: String {
+    return "\(name): \(desc)"
   }
 }

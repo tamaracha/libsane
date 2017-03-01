@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>PointerError Enum Reference</title>
+    <title>TextOption Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,19 +10,20 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/PointerError" class="dashAnchor"></a>
-    <a title="PointerError Enum Reference"></a>
+    <a name="//apple_ref/swift/Class/TextOption" class="dashAnchor"></a>
+    <a title="TextOption Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">libsane Docs</a> (100% documented)</p>
         <p class="header-right"><a href="https://github.com/tamaracha/libsane"><img src="../img/gh.png"/>View on GitHub</a></p>
+        <p class="header-right"><a href="dash-feed://https%3A%2F%2Ftamaracha%2Egithub%2Eio%2Flibsane%2Fdocsets%2Flibsane%2Exml"><img src="../img/dash.png"/>Install in Dash</a></p>
       </div>
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
         <a href="../index.html">libsane Reference</a>
         <img id="carat" src="../img/carat.png" />
-        PointerError Enum Reference
+        TextOption Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -32,10 +33,37 @@
             <a href="../Classes.html">Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="../Classes/BaseOption.html">BaseOption</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BaseOption/OptionError.html">– OptionError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/BaseOption/Unit.html">– Unit</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes.html#/s:C7libsane12ButtonOption">ButtonOption</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/Device.html">Device</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/Device/DeviceError.html">– DeviceError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Device/State.html">– State</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IntOption.html">IntOption</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/LibSane.html">LibSane</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NumericOption.html">NumericOption</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TextOption.html">TextOption</a>
               </li>
             </ul>
           </li>
@@ -43,10 +71,7 @@
             <a href="../Enums.html">Enums</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/PointerError.html">PointerError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Enums/SaneStatus.html">SaneStatus</a>
+                <a href="../Enums/Status.html">Status</a>
               </li>
             </ul>
           </li>
@@ -54,16 +79,19 @@
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Extensions/Double.html">Double</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/Int32.html">Int32</a>
+                <a href="../Extensions/SANE_Status.html">SANE_Status</a>
               </li>
             </ul>
           </li>
           <li class="nav-group-name">
             <a href="../Structs.html">Structs</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/Parameters.html">Parameters</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Parameters/FrameFormat.html">– FrameFormat</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Structs/Version.html">Version</a>
               </li>
@@ -74,14 +102,14 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>PointerError</h1>
+            <h1>TextOption</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">PointerError</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="kt">Error</span></code></pre>
+                  <pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TextOption</span><span class="p">:</span> <span class="kt"><a href="../Classes/BaseOption.html">BaseOption</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Additional errors which can occur with pointers</p>
+            <p>An option with a string value</p>
 
           </section>
           <section class="section task-group-section">
@@ -90,9 +118,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO7libsane12PointerError8negativeFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/negative" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO7libsane12PointerError8negativeFMS0_S0_">negative</a>
+                    <a name="/s:FC7libsane10TextOption8getValueFzT_SS"></a>
+                    <a name="//apple_ref/swift/Method/getValue()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC7libsane10TextOption8getValueFzT_SS">getValue()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -100,14 +128,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A number does not meet certain constraints</p>
+                        <p>Get the value of this option</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="n">negative</span><span class="p">,</span> <span class="n"><a href="../Enums/PointerError.html#/s:FO7libsane12PointerError5toBigFMS0_S0_">toBig</a></span><span class="p">,</span> <span class="n"><a href="../Enums/PointerError.html#/s:FO7libsane12PointerError7toSmallFMS0_S0_">toSmall</a></span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">getValue</span><span class="p">()</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -117,9 +145,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:FO7libsane12PointerError5toBigFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/toBig" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO7libsane12PointerError5toBigFMS0_S0_">toBig</a>
+                    <a name="/s:FC7libsane10TextOption8setValueFzSSSS"></a>
+                    <a name="//apple_ref/swift/Method/setValue(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:FC7libsane10TextOption8setValueFzSSSS">setValue(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -127,41 +155,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>A number does not meet certain constraints</p>
+                        <p>Change the value of this option</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="n"><a href="../Enums/PointerError.html#/s:FO7libsane12PointerError8negativeFMS0_S0_">negative</a></span><span class="p">,</span> <span class="n">toBig</span><span class="p">,</span> <span class="n"><a href="../Enums/PointerError.html#/s:FO7libsane12PointerError7toSmallFMS0_S0_">toSmall</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:FO7libsane12PointerError7toSmallFMS0_S0_"></a>
-                    <a name="//apple_ref/swift/Element/toSmall" class="dashAnchor"></a>
-                    <a class="token" href="#/s:FO7libsane12PointerError7toSmallFMS0_S0_">toSmall</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>A number does not meet certain constraints</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight"><code><span class="k">case</span> <span class="n"><a href="../Enums/PointerError.html#/s:FO7libsane12PointerError8negativeFMS0_S0_">negative</a></span><span class="p">,</span> <span class="n"><a href="../Enums/PointerError.html#/s:FO7libsane12PointerError5toBigFMS0_S0_">toBig</a></span><span class="p">,</span> <span class="n">toSmall</span></code></pre>
+                          <pre class="highlight"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setValue</span><span class="p">(</span><span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span> <span class="k">throws</span> <span class="o">-&gt;</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -173,7 +174,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">Tamara Cook</a>. All rights reserved. (Last updated: 2017-02-12)</p>
+          <p>&copy; 2017 <a class="link" href="" target="_blank" rel="external">Tamara Cook</a>. All rights reserved. (Last updated: 2017-03-01)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.7.4</a>, a <a class="link" href="http://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

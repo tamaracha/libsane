@@ -1,31 +1,71 @@
 import Clibsane
 
-class TextOption: BaseOption, Changeable {
-  var value: String {
-    get {
-      return "hallo"
+/// An option with a string value
+public class TextOption: BaseOption {
+  //MARK: Properties
+  let size: Int
+  let constraint: [String]?
+  var value = "hallo"
+
+  //MARK: Lifecycle
+  override init(from descriptor: SANE_Option_Descriptor, at index: SANE_Int, of device: Device) {
+    size = Int(descriptor.size)
+    switch descriptor.constraint_type {
+    case SANE_CONSTRAINT_NONE:
+      constraint = nil
+    case SANE_CONSTRAINT_STRING_LIST:
+      guard var itemPointer = descriptor.constraint.string_list else {
+        constraint = nil
+        break
+      }
+      var list = [String]()
+      while itemPointer.pointee != nil {
+        if let item = itemPointer.pointee {
+          list.append(String(cString: item))
+        }
+        itemPointer = itemPointer.successor()
+      }
+      constraint = list
+    default:
+      constraint = nil
     }
-    set {
-      
+    super.init(from: descriptor, at: index, of: device)
+  }
+}
+
+extension TextOption: Changeable {
+  func validate(_ value: String) -> Bool {
+    if value.utf8CString.count > size {
+      return false
+    } else if let constraint = constraint {
+      return constraint.contains(value)
+    } else {
+      return true
     }
   }
-  func getValue() throws -> String {
-    let (handle, index) = try checkHandle()
-    var saneValue = ""
-    let status = Int(sane_control_option(handle, index, SANE_Action(0), &saneValue, nil).rawValue)
-    guard status == 0 else {
-      throw SaneStatus(rawValue: status)!
-    }
-    return saneValue
+  func fromSane(_ saneValue: SANE_String_Const) -> String {
+    return String(cString: saneValue)
   }
-  func setValue(value: String) throws -> (value: String, info: Info) {
-    let (handle, index) = try checkHandle()
-    var saneValue = value
-    var saneInfo: Int32 = 0
-    let status = Int(sane_control_option(handle, index, SANE_Action(1), &saneValue, &saneInfo).rawValue)
-    guard status == 0 else {
-      throw SaneStatus(rawValue: status)!
+  /// Get the value of this option
+  public func getValue() throws -> String {
+    try cap.canRead()
+    let value = String(repeating: "x", count: size-1)
+    return try value.withCString({ (ptr: SANE_String_Const) -> String in
+      let saneValue: SANE_String = UnsafeMutablePointer(mutating: ptr)
+      try device?.getValue(at: index, to: saneValue)
+      return fromSane(saneValue)
+    })
+  }
+  /// Change the value of this option
+  public func setValue(_ value: String) throws -> String {
+    try cap.canWrite()
+    guard validate(value) == true else {
+      throw OptionError.invalid
     }
-    return (value: saneValue, info: Info(rawValue: Int(saneInfo)))
+    return try value.withCString({ (ptr: SANE_String_Const) -> String in
+      let saneValue: SANE_String = UnsafeMutablePointer(mutating: ptr)
+      try device?.setValue(at: index, to: saneValue)
+      return fromSane(saneValue)
+    })
   }
 }

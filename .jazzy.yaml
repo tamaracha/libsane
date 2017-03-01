@@ -1,6 +1,8 @@
 author: Tamara Cook
 github_url: https://github.com/tamaracha/libsane
+root_url: https://tamaracha.github.io/libsane/
 module: libsane
+module_version: 0.2.0
 swift_version: 3.0.2
 sdk: macosx
 readme: ./libsane/README.md

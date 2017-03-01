@@ -1,24 +1,39 @@
 import Clibsane
 
+/// An option with a binary value
 class SwitchOption: BaseOption, Changeable {
+  //MARK: Properties
   var value = false
-  func getValue() throws -> Bool {
-    let (handle, index) = try checkHandle()
-    var saneValue: Int32 = 0
-    let status = Int(sane_control_option(handle, index, SANE_Action(0), &saneValue, nil).rawValue)
-    guard status == 0 else {
-      throw SaneStatus(rawValue: status)!
-    }
-    return Int(saneValue) == 1
+
+  //MARK: Lifecycle
+  override init(from descriptor: SANE_Option_Descriptor, at index: SANE_Int, of device: Device) {
+    super.init(from: descriptor, at: index, of: device)
   }
-  func setValue(value: Bool) throws -> (value: Bool, info: Info) {
-    let (handle, index) = try checkHandle()
-    var saneValue: Int32 = value ? 1 : 0
-    var saneInfo: Int32 = 0
-    let status = Int(sane_control_option(handle, index, SANE_Action(1), &saneValue, &saneInfo).rawValue)
-    guard status == 0 else {
-      throw SaneStatus(rawValue: status)!
+
+  func toSane(_ value: Bool) -> SANE_Bool {
+    return value ? SANE_TRUE : SANE_FALSE
+  }
+  func fromSane(_ saneValue: SANE_Bool) -> Bool {
+    switch saneValue {
+    case SANE_FALSE:
+      return false
+    case SANE_TRUE:
+      return true
+    default:
+      return false
     }
-    return (value: Int(saneValue) == 1, info: Info(rawValue: Int(saneInfo)))
+  }
+  //MARK: Methods for Changeable
+  func getValue() throws -> Bool {
+    try cap.canRead()
+    var saneValue: SANE_Bool = SANE_FALSE
+    try device?.getValue(at: index, to: &saneValue)
+    return fromSane(saneValue)
+  }
+  func setValue(_ value: Bool) throws -> Bool {
+    try cap.canWrite()
+    var saneValue = toSane(value)
+    try device?.setValue(at: index, to: &saneValue)
+    return fromSane(saneValue)
   }
 }

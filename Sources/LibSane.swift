@@ -41,7 +41,7 @@ final public class LibSane {
     var tmpPointer: UnsafeMutablePointer<UnsafePointer<SANE_Device>?>?
     let status = sane_get_devices(&tmpPointer, localOnly ? SANE_TRUE : SANE_FALSE)
     guard status == SANE_STATUS_GOOD else {
-      throw status
+      throw Status(rawValue: status)!
     }
     var devices = [String: Device]()
     guard var pointer = tmpPointer else {

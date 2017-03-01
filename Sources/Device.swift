@@ -67,7 +67,7 @@ close()
     var handle: SANE_Handle?
     let status = sane_open(name, &handle)
     guard status == SANE_STATUS_GOOD else {
-      throw status
+      throw Status(rawValue: status)!
     }
     self.handle = handle
     if state == .open {
@@ -93,7 +93,7 @@ close()
     var count: SANE_Int = 1
     let status = sane_control_option(handle, 0, SANE_ACTION_GET_VALUE, &count, nil)
     guard status == SANE_STATUS_GOOD else {
-      throw status
+      throw Status(rawValue: status)!
     }
     guard count > 1 else {
       return
@@ -143,7 +143,7 @@ close()
     }
     let status = sane_control_option(handle, index, SANE_ACTION_SET_AUTO, nil, nil)
     guard status == SANE_STATUS_GOOD else {
-      throw status
+      throw Status(rawValue: status)!
     }
   }
   func getValue(at index: SANE_Int, to ptr: UnsafeMutableRawPointer) throws {
@@ -155,7 +155,7 @@ close()
     }
     let status = sane_control_option(handle, index, SANE_ACTION_GET_VALUE, ptr, nil)
     guard status == SANE_STATUS_GOOD else {
-      throw status
+      throw Status(rawValue: status)!
     }
   }
   func setValue(at index: SANE_Int, to ptr: UnsafeMutableRawPointer) throws {
@@ -168,7 +168,7 @@ close()
     var saneInfo: SANE_Int = 0
     let status = sane_control_option(handle, index, SANE_ACTION_SET_VALUE, ptr, &saneInfo)
     guard status == SANE_STATUS_GOOD else {
-      throw status
+      throw Status(rawValue: status)!
     }
     let info = Info(rawValue: saneInfo)
     if info.contains(.reloadOptions) {
@@ -183,7 +183,7 @@ close()
     var params = SANE_Parameters()
     let status = sane_get_parameters(handle, &params)
     guard status == SANE_STATUS_GOOD else {
-      throw status
+      throw Status(rawValue: status)!
     }
     return Parameters(params)
   }
@@ -196,7 +196,7 @@ close()
     }
     let status = sane_start(handle)
     guard status == SANE_STATUS_GOOD else {
-throw status
+      throw Status(rawValue: status)!
 }
   }
   private func setAsync() throws -> Bool {
@@ -210,7 +210,7 @@ throw status
     else if status == SANE_STATUS_UNSUPPORTED {
       return false
     } else {
-      throw status
+      throw Status(rawValue: status)!
     }
   }
   private func read(frameSize: Int? = nil, maxLen: Int = Device.bufferSize) throws -> [SANE_Byte] {
@@ -234,7 +234,7 @@ throw status
       } while status == SANE_STATUS_GOOD
     }
     guard status == SANE_STATUS_EOF || status == SANE_STATUS_GOOD else {
-      throw status
+      throw Status(rawValue: status)!
     }
     return data
 }
